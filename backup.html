@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Giphy Cartoons</title>
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>THE RATED (G)IF SMILE MACHINE</h1>
+    <h2> safe for work and home :-)</h2>
+    
+
+    
+    <div id="buttons-view"></div>
+
+    <form id="cartoonEntryForm">
+      <label for="cartoonInput">Enter Your Favorite Cartoon!</label>
+      <input type="text" id="cartoonInput"><br>
+
+      <input id="addCartoon" type="submit" value="Favorite Cartoon">
+    </form>
+
+    
+    <div id="cartoonDisplay"></div>
+    
+   
+
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript">
+      // variable for the Public API key and the string array of preselected cartoon gifs
+      var apiKey = "dc6zaTOxFJmzC";
+      var topics = ["popeye", "felix the cat", "gumby"];
+      // var pauseGif =
+      // var playGif =
+      
+
+      // cartoonShow function performs the ajax call and creates a varable called toons for any characters entered in the form field
+      function cartoonShow() {
+        var toons = $(this).attr("data-name");
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + toons + "&limit=9&rating=g&api_key=" + apiKey;
+        // The ajax call for getting a gif from one of the pre-selected buttons
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).done(function(response) {
+          console.log(response);
+          console.log(response.data[1].url);
+          // variable called toonDiv to hold the Gifs on the webpage
+          // var toonDiv = $("<div class='displayedtoons'>");
+          
+          // placing the gif data in a variable
+          var toonContent = response.data[0].url;
+          var toonLoad = $('#cartoonDisplay');
+          
+    
+    // var toonContent = response.data[1].url;  
+
+        // Looping through the array variable called topics (popeye, gumby, felix)
+        for (var i = 0; i < toonContent.length; i++) {
+          // console.log(toonContent);
+          toonLoad.append(toonContent);
+          toonLoad.html('<img src="' + response.data[i].images.downsized_medium.url + '" alt="">');
+          // // Then dynamicaly generating buttons for each movie in the array
+          // // variable button assigned to the jquery button tag
+          // var button = $("<button>");
+          // // addclass will add  the .class to the buttons created
+          // button.addClass("cartoon");
+          // // Adding a data-attribute
+          // button.attr("data-name", topics[i]);
+          // // Providing the initial button text from var topics (popeye, gumby, felix)
+          // button.text(topics[i]);
+          // // appending the content from the var topics (popeye, gumby, felix) creates 3 buttons with the same name
+          // $("#buttons-view").append(button);
+        }    
+          
+          
+        
+    // $("#cartoonDisplay").click(function(){
+    // $(".animated").stop();
+    // });
+
+        });
+
+    
+      }
+      // Function for making the buttons that will display on the top of the HTML, will be reused.
+      function makeButtons() {
+      
+        // .empty function to clear the buttons and avoid repeated buttons
+        $("#buttons-view").empty();
+        // Looping through the array variable called topics (popeye, gumby, felix)
+        for (var i = 0; i < topics.length; i++) {
+          // Then dynamicaly generating buttons for each movie in the array
+          // variable button assigned to the jquery button tag
+          var button = $("<button>");
+          // addclass will add  the .class to the buttons created
+          button.addClass("cartoon");
+          // Adding a data-attribute
+          button.attr("data-name", topics[i]);
+          // Providing the initial button text from var topics (popeye, gumby, felix)
+          button.text(topics[i]);
+          // appending the content from the var topics (popeye, gumby, felix) creates 3 buttons with the same name
+          $("#buttons-view").append(button);
+        }
+      }
+      //on click function for the submit button 
+      $("#addCartoon").on("click", function(event) {
+        //prevent the text in the field from being submitted to a server. default action
+        event.preventDefault();
+        // this variable called toons grabs the information from the form field and applies .trim to remove uneeded spaces.
+        var toons = $("#cartoonInput").val().trim();
+        // Adding a cartoon character name thru the push function from the textbox to our topics 
+        topics.push(toons);
+      //calls the function to make another buton in the HTML buttons view div.
+        makeButtons();
+      });
+      // Adding a click event listener to all elements with a class of .cartoon 
+      $(document).on("click", ".cartoon", cartoonShow);
+      // Calling the renderButtons function to display the intial buttons from the topics variable
+      makeButtons();
+    </script>
+  </div>
+</body>
+
+</html>
